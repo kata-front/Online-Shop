@@ -1,5 +1,5 @@
-import LoginForm from "@/components/UI/auth/login";
-import Modal from "@/components/UI/auth/modal";
+import LoginForm from "@/components/auth/login";
+import Modal from "@/components/auth/modal";
 
 const login = () => {
   return <Modal>

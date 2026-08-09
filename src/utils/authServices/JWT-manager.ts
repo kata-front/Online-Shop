@@ -32,7 +32,7 @@ export const verifyToken = async (token: string) => {
     });
     return payload;
   } catch (error: any) {
-    throw error.message || "Something went wrong";
+    throw new Error(error.message || "Something went wrong");
   }
 };
 
@@ -55,16 +55,4 @@ export const createAndSetTokens = async (user: User, cookieStore: ReadonlyReques
   });
 
   return {success: true};
-};
-
-export const createAccessToRefresh = async (refreshToken: string): Promise<string> => {
-  const payload = await verifyToken(refreshToken)
-
-  const newAccessToken = await createAccessToken({
-    id: Number(payload.id),
-    name: payload.name as string,
-    email: payload.email as string,
-  });
-  
-  return newAccessToken
 }

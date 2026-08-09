@@ -1,50 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAccessToRefresh, verifyToken } from "./utils/authServices/JWT-manager";
+import {
+  createAccessToken,
+  verifyToken,
+} from "./utils/authServices/JWT-manager";
+import prisma from "./utils/prisma";
 
 export default async function proxy(request: NextRequest) {
   const url = request.nextUrl;
   const response = NextResponse.next();
 
-  if (
-    request.cookies.has("refreshToken") &&
-    !request.cookies.has("accessToken")
-  ) {
-    const accessToken = await createAccessToRefresh(
-      request.cookies.get("refreshToken")?.value!,
-    );
+  const accessToken = request.cookies.get("accessToken");
+  const refreshToken = request.cookies.get("refreshToken");
 
-    response.cookies.set("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 15,
-    });
-  }
+  if (accessToken) {
+    try {
+      const { id, email } = (await verifyToken(accessToken.value)) as {
+        id: number;
+        email: string;
+      };
 
-  if (
-    url.pathname.startsWith("/chats") ||
-    url.pathname.startsWith("/profile")
-  ) {
-    const accessToken = request.cookies.get("accessToken")?.value;
-    const newUrl = new URL("/auth/login", url.pathname);
+      const user = await prisma.user.findUnique({ where: { id, email } });
 
-    if (accessToken) {
-        try {
-            const payload = await verifyToken(accessToken);
-
-            return NextResponse.next();
-        } catch (error) {
-            return NextResponse.redirect(newUrl);
-        }
+      if (user) {
+        return response
+      }
+    } catch (error) {
+      response.cookies.delete("accessToken");
     }
-
-    return NextResponse.redirect(newUrl);
   }
 
-  return response;
+  if (refreshToken) {
+    try {
+      const { id, email } = (await verifyToken(refreshToken.value)) as {
+        id: number;
+        email: string;
+      };
+
+      const user = await prisma.user.findUnique({ where: { id, email } });
+
+      if (user) {
+        const accessToken = await createAccessToken(user);
+        response.cookies.set("accessToken", accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          maxAge: 60 * 15,
+        })
+
+        return response
+      }
+    } catch (error) {
+      
+    }
+  }
+
+  response.cookies.delete('accessToken');
+  response.cookies.delete('refreshToken');
+
+  const loginUrl = new URL('/auth/login', request.url)
+
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  //matcher: ['/auth/:path*', '/chats/:path*', '/profile/:path*'],
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png).*)'],
+  matcher: ['/chats/:path*', '/profile/:path*'],
+  //matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png).*)"],
 };

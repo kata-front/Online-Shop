@@ -1,5 +1,5 @@
-import Modal from "@/components/UI/auth/modal";
-import RegisterForm from "@/components/UI/auth/register";
+import Modal from "@/components/auth/modal";
+import RegisterForm from "@/components/auth/register";
 
 const register = () => {
   return <Modal>
