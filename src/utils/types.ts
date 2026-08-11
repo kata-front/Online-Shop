@@ -1,3 +1,5 @@
+import prisma from "./prisma";
+
 export type User = {
     id: number;
     name: string;

@@ -4,9 +4,9 @@ import {
   verifyToken,
 } from "./utils/authServices/JWT-manager";
 import prisma from "./utils/prisma";
+import getCurrentUser from "./utils/actions/getCurrentUser";
 
 export default async function proxy(request: NextRequest) {
-  const url = request.nextUrl;
   const response = NextResponse.next();
 
   const accessToken = request.cookies.get("accessToken");
@@ -14,12 +14,7 @@ export default async function proxy(request: NextRequest) {
 
   if (accessToken) {
     try {
-      const { id, email } = (await verifyToken(accessToken.value)) as {
-        id: number;
-        email: string;
-      };
-
-      const user = await prisma.user.findUnique({ where: { id, email } });
+      const user = await getCurrentUser()
 
       if (user) {
         return response
@@ -63,6 +58,6 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/chats/:path*', '/profile/:path*'],
+  matcher: ['/cart/:path*', '/profile/:path*'],
   //matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png).*)"],
 };

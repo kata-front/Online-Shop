@@ -32,6 +32,8 @@ model Product {
   price Int
   image String
 
+  description String
+
   user User[]
 
   createdAt DateTime @default(now()) @map("created_at")

@@ -1,3 +1,7 @@
+'use client'
+
+import { addToCartAction } from "@/utils/actions/addToCart";
+import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -6,12 +10,20 @@ interface ProductCardProps {
   price: number;
   description: string;
   image?: string;
+  id: number
 }
 
-const ProductCard = ({ name, price, description, image }: ProductCardProps) => {
+const ProductCard = ({ name, price, description, image, id }: ProductCardProps) => {
+  const {execute, isExecuting} = useAction(addToCartAction, {
+    onError: ({ error }) => {
+      if (error.thrownError) {
+        console.error(error.thrownError);
+      }
+    }
+  });
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-      {/* Изображение (или плейсхолдер) */}
       <div className="relative h-52 w-full bg-gray-100">
         {image ? (
           <Image
@@ -40,7 +52,6 @@ const ProductCard = ({ name, price, description, image }: ProductCardProps) => {
           </div>
         )}
 
-        {/* Кнопка быстрого просмотра (появляется при наведении) */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-black/20">
           <button className="rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-md hover:bg-gray-100">
             Быстрый просмотр
@@ -48,7 +59,6 @@ const ProductCard = ({ name, price, description, image }: ProductCardProps) => {
         </div>
       </div>
 
-      {/* Контент */}
       <div className="flex flex-1 flex-col p-4">
         <Link
           href={`/product/${encodeURIComponent(name)}`}
@@ -67,6 +77,12 @@ const ProductCard = ({ name, price, description, image }: ProductCardProps) => {
           <button
             className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 active:scale-95"
             aria-label="Добавить в корзину"
+            onClick={async () => {
+              await execute({
+                name,
+                id
+              })
+            }}
           >
             В корзину
           </button>

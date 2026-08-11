@@ -1,30 +1,16 @@
 import ProductCard from "@/components/UI/card";
+import prisma from "@/utils/prisma";
 
-interface ProductCardProps {
-  name: string;
-  price: number;
-  description: string;
-  image?: string;
-}
-
-export default function Home() {
-  const products: ProductCardProps[] = [
-    {
-      name: 'Product 1',
-      price: 100,
-      description: 'Description 1',
-    },
-    {
-      name: 'Product 2',
-      price: 200,
-      description: 'Description 2',
-    },
-    {
-      name: 'Product 3',
-      price: 300,
-      description: 'Description 3',
-    },
-  ]
+export default async function Home() {
+  const products = await prisma.product.findMany({
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      price: true,
+      image: true,
+    }
+  });
 
   return (
     <div>
