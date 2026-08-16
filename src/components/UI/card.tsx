@@ -9,11 +9,12 @@ interface ProductCardProps {
   name: string;
   price: number;
   description: string;
-  image?: string;
-  id: number
+  image?: string | null;
+  id: number,
+  className?: string
 }
 
-const ProductCard = ({ name, price, description, image, id }: ProductCardProps) => {
+const ProductCard = ({ name, price, description, image, id, className }: ProductCardProps) => {
   const {execute, isExecuting} = useAction(addToCartAction, {
     onError: ({ error }) => {
       if (error.thrownError) {
@@ -23,7 +24,7 @@ const ProductCard = ({ name, price, description, image, id }: ProductCardProps) 
   });
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+    <div className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${className}`}>
       <div className="relative h-52 w-full bg-gray-100">
         {image ? (
           <Image

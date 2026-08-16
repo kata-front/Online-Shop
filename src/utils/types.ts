@@ -17,3 +17,10 @@ export type LoginRequest = {
     email: string;
     password: string;
 }
+
+export type Product = {
+    name: string;
+    description: string;
+    price: number;
+    image?: string;
+}

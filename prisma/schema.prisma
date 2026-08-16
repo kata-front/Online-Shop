@@ -12,12 +12,18 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id       Int    @id @default(autoincrement())
   name     String
   email    String @unique
   password String
 
+  role Role @default(USER)
   products Product[]
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -30,7 +36,7 @@ model Product {
   id    Int    @id @default(autoincrement())
   name  String
   price Int
-  image String
+  image String?
 
   description String
 
