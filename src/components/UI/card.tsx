@@ -1,30 +1,44 @@
-'use client'
+"use client";
 
 import { addToCartAction } from "@/utils/actions/addToCart";
 import { useAction } from "next-safe-action/hooks";
 import Image from "next/image";
 import Link from "next/link";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 interface ProductCardProps {
   name: string;
   price: number;
   description: string;
   image?: string | null;
-  id: number,
-  className?: string
+  id: number;
+  className?: string;
+  isFavorite: boolean;
+  handleFavoriteClick: (productId: number) => void;
 }
 
-const ProductCard = ({ name, price, description, image, id, className }: ProductCardProps) => {
-  const {execute, isExecuting} = useAction(addToCartAction, {
+const ProductCard = ({
+  name,
+  price,
+  description,
+  image,
+  id,
+  className,
+  isFavorite,
+  handleFavoriteClick,
+}: ProductCardProps) => {
+  const { execute, isExecuting } = useAction(addToCartAction, {
     onError: ({ error }) => {
       if (error.thrownError) {
         console.error(error.thrownError);
       }
-    }
+    },
   });
 
   return (
-    <div className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${className}`}>
+    <div
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${className}`}
+    >
       <div className="relative h-52 w-full bg-gray-100">
         {image ? (
           <Image
@@ -75,18 +89,35 @@ const ProductCard = ({ name, price, description, image, id, className }: Product
           <span className="text-xl font-bold text-indigo-600">
             {price.toLocaleString("ru-RU")} ₽
           </span>
-          <button
-            className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 active:scale-95"
-            aria-label="Добавить в корзину"
-            onClick={async () => {
-              await execute({
-                name,
-                id
-              })
-            }}
-          >
-            В корзину
-          </button>
+          <div className="flex gap-3">
+            {isFavorite ? (
+              <button
+                onClick={() => handleFavoriteClick(id)}
+                className="text-red-500"
+              >
+                <FaHeart size={25} />
+              </button>
+            ) : (
+              <button
+                onClick={() => handleFavoriteClick(id)}
+                className="text-gray-400"
+              >
+                <FaRegHeart size={25} />
+              </button>
+            )}
+            <button
+              className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-600 active:scale-95"
+              aria-label="Добавить в корзину"
+              onClick={async () => {
+                await execute({
+                  name,
+                  id,
+                });
+              }}
+            >
+              В корзину
+            </button>
+          </div>
         </div>
       </div>
     </div>

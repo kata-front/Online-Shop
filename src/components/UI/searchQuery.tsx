@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Input from "./input";
 
 const SearchQuery = () => {
   const [query, setQuery] = useState<string>("");
@@ -26,8 +27,9 @@ const SearchQuery = () => {
 
   return (
     <div>
-      <div>Поиск</div>
-      <input
+      <Input
+        label='Поиск'
+        className='text-foreground'
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}

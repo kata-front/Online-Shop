@@ -2,6 +2,7 @@ import ProductCard from "@/components/UI/card";
 import Cards from "@/components/UI/cards";
 import SearchQuery from "@/components/UI/searchQuery";
 import SelectSort from "@/components/UI/selectSort";
+import getCurrentUser from "@/utils/actions/getCurrentUser";
 import prisma from "@/utils/prisma";
 import { Suspense } from "react";
 
@@ -11,6 +12,11 @@ export default async function Home({
   searchParams?: { sort?: string; query?: string };
 }) {
   const params = await searchParams;
+  const user = await getCurrentUser();
+
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   const sort = params?.sort || "date_asc";
   let orderBy = {};
@@ -52,8 +58,8 @@ export default async function Home({
   });
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-white p-6 rounded-xl shadow-lg mb-10 border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="p-6 bg-gray-50 min-h-screen font-sans">
+      <div className="bg-white p-6 rounded-xl shadow-2xl mb-10 border border-gray-200  flex items-right flex-col">
         <h1 className="text-3xl font-bold text-gray-800">Каталог товаров</h1>
 
         <Suspense fallback={<div>Загрузка...</div>}>
@@ -66,7 +72,7 @@ export default async function Home({
       </div>
 
       <h1>Каталог товаров</h1>
-      <Cards products={products} />
+      <Cards products={products} favoritesId={user.favoritesId} />
     </div>
   );
 }
