@@ -80,7 +80,10 @@ const Header = () => {
     >
       <div className="w-fullcontainer mx-2.5 flex items-center justify-between py-3">
         <div className="flex items-center space-x-4">
-          <button className="relative p-2 text-gray-600 hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-2 duration-300 cursor-pointer">
+          <Link
+            href="/cart"
+            className={`relative p-2 ${scrolled ? 'text-white' : 'text-gray-600'} hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-2 duration-300 cursor-pointer`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -98,9 +101,12 @@ const Header = () => {
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-xs text-white">
               2
             </span>
-          </button>
+          </Link>
 
-          <button className="p-2 text-gray-600 hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-2 duration-300 cursor-pointer">
+          <Link
+            href="/profile"
+            className={`p-2 ${scrolled ? 'text-white' : 'text-gray-600'} hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-2 duration-300 cursor-pointer`}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -115,7 +121,7 @@ const Header = () => {
                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
               />
             </svg>
-          </button>
+          </Link>
         </div>
 
         <Link
@@ -135,14 +141,14 @@ const Header = () => {
         </div>
         <div className="md:flex items-center gap-4 hidden">
           <Link
-            href="/login"
-            className="text-gray-600 hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-1 duration-300 cursor-pointer relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:w-0 after:transition-all hover:after:w-full after:duration-300"
+            href="/auth/login"
+            className={`${scrolled ? 'text-white' : 'text-gray-600'} hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-1 duration-300 cursor-pointer relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:w-0 after:transition-all hover:after:w-full after:duration-300`}
           >
             Войти
           </Link>
           <Link
-            href="/register"
-            className="text-gray-600 hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-1 duration-300 cursor-pointer relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:w-0 after:transition-all hover:after:w-full after:duration-300"
+            href="/auth/register"
+            className={`${scrolled ? 'text-white' : 'text-gray-600'} hover:text-indigo-600 transition-all hover:scale-1.2 hover:-translate-y-1 duration-300 cursor-pointer relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:w-0 after:transition-all hover:after:w-full after:duration-300`}
           >
             Регистрация
           </Link>
